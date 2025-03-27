@@ -1,1 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Text & Image Summarization Web App</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .container { max-width: 800px; margin: auto; }
+    h1 { text-align: center; }
+    form { margin-bottom: 40px; padding: 20px; border: 1px solid #ccc; }
+    textarea { width: 100%; height: 150px; }
+    input[type="submit"] { padding: 10px 20px; }
+    .result { margin-top: 20px; background: #f4f4f4; padding: 15px; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Text & Image Summarization</h1>
+
+    <!-- Text Summarization Form -->
+    <form id="textForm">
+      <h2>Text Summarization</h2>
+      <label for="text">Enter Text:</label>
+      <textarea id="text" name="text" placeholder="Paste your text here..."></textarea>
+      <br><br>
+      <label for="mode">Summarization Mode:</label>
+      <select id="mode" name="mode">
+        <option value="abstractive">Abstractive</option>
+        <option value="extractive">Extractive</option>
+      </select>
+      <br><br>
+      <input type="submit" value="Summarize Text">
+      <div class="result" id="textResult" style="display:none;"></div>
+    </form>
+
+    <!-- Image Captioning Form -->
+    <form id="imageForm" enctype="multipart/form-data">
+      <h2>Image Captioning</h2>
+      <label for="image">Select Image:</label>
+      <input type="file" id="image" name="image" accept="image/*">
+      <br><br>
+      <input type="submit" value="Caption Image">
+      <div class="result" id="imageResult" style="display:none;"></div>
+    </form>
+  </div>
+
+  <script>
+    // Handle text summarization form submission
+    document.getElementById("textForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const text = document.getElementById("text").value;
+      const mode = document.getElementById("mode").value;
+      const response = await fetch("/summarize_text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, mode })
+      });
+      const result = await response.json();
+      const textResult = document.getElementById("textResult");
+      textResult.style.display = "block";
+      textResult.textContent = result.summary ? result.summary : result.error;
+    });
+
+    // Handle image captioning form submission
+    document.getElementById("imageForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const imageInput = document.getElementById("image");
+      const formData = new FormData();
+      formData.append("image", imageInput.files[0]);
+      
+      const response = await fetch("/caption_image", {
+        method: "POST",
+        body: formData
+      });
+      const result = await response.json();
+      const imageResult = document.getElementById("imageResult");
+      imageResult.style.display = "block";
+      imageResult.textContent = result.caption ? result.caption : result.error;
+    });
+  </script>
+</body>
+</html>
 

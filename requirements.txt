@@ -1,1 +1,8 @@
+flask
+transformers
+torch
+datasets
+Pillow
+nltk
+evaluate
 
