@@ -87,6 +87,6 @@ def main():
     print(f"ROUGE-1: {scores['rouge1']:.4f}")
     print(f"ROUGE-2: {scores['rouge2']:.4f}")
     print(f"ROUGE-L: {scores['rougeL']:.4f}")
-
+    
 if __name__ == "__main__":
     main()
